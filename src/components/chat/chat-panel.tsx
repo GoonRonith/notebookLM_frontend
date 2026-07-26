@@ -17,10 +17,13 @@ import {
 import { Message, MessageContent } from "@/components/ui/message"
 import { BubbleGroup, Bubble, BubbleContent } from "@/components/ui/bubble"
 import { useChat } from "@/features/chat/use-chat"
+import { CitationViewerDialog } from "@/components/chat/citation-viewer-dialog"
+import type { Citation } from "@/features/chat/types"
 
 export function ChatPanel() {
   const { messages, sendMessage, isPending } = useChat()
   const [input, setInput] = useState("")
+  const [activeCitation, setActiveCitation] = useState<Citation | null>(null)
 
   function handleSubmit(event: FormEvent) {
     event.preventDefault()
@@ -79,28 +82,17 @@ export function ChatPanel() {
                           <div className="mt-2 flex flex-col gap-1.5">
                             <span className="text-xs font-medium text-muted-foreground">Sources</span>
                             <div className="flex flex-wrap gap-1.5">
-                              {message.citations.map((citation, index) =>
-                                citation.url ? (
-                                  <a
-                                    key={`${citation.url}-${index}`}
-                                    href={citation.url}
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                    title={citation.snippet}
-                                    className="rounded-full border bg-muted px-2.5 py-1 text-xs text-muted-foreground transition-colors hover:bg-accent hover:text-accent-foreground"
-                                  >
-                                    {citation.label}
-                                  </a>
-                                ) : (
-                                  <span
-                                    key={`${citation.label}-${index}`}
-                                    title={citation.snippet}
-                                    className="rounded-full border bg-muted px-2.5 py-1 text-xs text-muted-foreground"
-                                  >
-                                    {citation.label}
-                                  </span>
-                                ),
-                              )}
+                              {message.citations.map((citation, index) => (
+                                <button
+                                  key={`${citation.url ?? citation.label}-${index}`}
+                                  type="button"
+                                  title={citation.snippet}
+                                  onClick={() => setActiveCitation(citation)}
+                                  className="rounded-full border bg-muted px-2.5 py-1 text-xs text-muted-foreground transition-colors hover:bg-accent hover:text-accent-foreground"
+                                >
+                                  {citation.label}
+                                </button>
+                              ))}
                             </div>
                           </div>
                         ) : null}
@@ -128,6 +120,13 @@ export function ChatPanel() {
           {isPending ? <Spinner /> : <SendIcon />}
         </Button>
       </form>
+
+      <CitationViewerDialog
+        citation={activeCitation}
+        onOpenChange={(open) => {
+          if (!open) setActiveCitation(null)
+        }}
+      />
     </div>
   )
 }
