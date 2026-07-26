@@ -38,7 +38,7 @@ export function useChat() {
       setMessages((prev) =>
         prev.map((message) =>
           message.id === context.assistantMessageId
-            ? { ...message, content: data.response, status: "done" }
+            ? { ...message, content: data.response, citations: data.citations, status: "done" }
             : message,
         ),
       )

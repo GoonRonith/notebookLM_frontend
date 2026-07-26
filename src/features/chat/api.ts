@@ -1,7 +1,10 @@
+import type { Citation } from "./types"
+
 const API_BASE_URL = (import.meta.env.VITE_API_URL ?? "http://localhost:8001").replace(/\/+$/, "")
 
 export interface QueryResponse {
   response: string
+  citations?: Citation[]
 }
 
 async function parseErrorMessage(res: Response, fallback: string) {

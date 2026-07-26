@@ -75,6 +75,35 @@ export function ChatPanel() {
                             </BubbleContent>
                           </Bubble>
                         </BubbleGroup>
+                        {message.citations && message.citations.length > 0 ? (
+                          <div className="mt-2 flex flex-col gap-1.5">
+                            <span className="text-xs font-medium text-muted-foreground">Sources</span>
+                            <div className="flex flex-wrap gap-1.5">
+                              {message.citations.map((citation, index) =>
+                                citation.url ? (
+                                  <a
+                                    key={`${citation.url}-${index}`}
+                                    href={citation.url}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    title={citation.snippet}
+                                    className="rounded-full border bg-muted px-2.5 py-1 text-xs text-muted-foreground transition-colors hover:bg-accent hover:text-accent-foreground"
+                                  >
+                                    {citation.label}
+                                  </a>
+                                ) : (
+                                  <span
+                                    key={`${citation.label}-${index}`}
+                                    title={citation.snippet}
+                                    className="rounded-full border bg-muted px-2.5 py-1 text-xs text-muted-foreground"
+                                  >
+                                    {citation.label}
+                                  </span>
+                                ),
+                              )}
+                            </div>
+                          </div>
+                        ) : null}
                       </MessageContent>
                     </Message>
                   </MessageScrollerItem>
